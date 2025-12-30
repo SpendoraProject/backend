@@ -1,3 +1,24 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # Expense Service
+        - id: expense-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/expenses/**
+            - Path=/api/categories/**
+
+        # Auth Service
+        - id: auth-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/auth/**
+
+      default-filters:
+        - StripPrefix=1  # Removes first segment like /api
