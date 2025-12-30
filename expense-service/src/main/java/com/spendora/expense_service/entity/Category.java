@@ -2,14 +2,13 @@ package com.spendora.expense_service.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "expenses")
+@Table(name = "categories")
 @Data
-public class Expense {
+@NoArgsConstructor
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,16 +18,8 @@ public class Expense {
     private String userId;
 
     @Column(nullable = false)
-    private Double amount;
+    private String name;
 
     private String description;
-
-    @Column(nullable = false)
-    private String category;
-
-    @Column(nullable = false)
-    private LocalDate expenseDate;
-
-    private LocalDateTime createdAt;
 }
 
