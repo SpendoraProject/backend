@@ -5,7 +5,7 @@ import com.spendora.expense_service.entity.Expense;
 import java.util.List;
 
 public interface ExpenseService {
-    Expense createExpense(Expense expense);
+    Expense createExpense(Expense expense, String userId);
 
     List<Expense> getUserExpenses(String userId);
 

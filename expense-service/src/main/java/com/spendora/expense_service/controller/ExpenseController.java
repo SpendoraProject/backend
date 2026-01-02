@@ -3,14 +3,13 @@ package com.spendora.expense_service.controller;
 import com.spendora.expense_service.entity.Expense;
 import com.spendora.expense_service.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/expenses")
+@RequestMapping("/api/expenses")
 public class ExpenseController {
 
     @Autowired
@@ -19,14 +18,13 @@ public class ExpenseController {
     //Create Expense
     @PostMapping
     public ResponseEntity<Expense> createExpense(
-            @RequestBody Expense expense) {
-        return ResponseEntity.ok(expenseService.createExpense(expense));
+            @RequestBody Expense expense, @RequestHeader("X-User-Id") String userId) {
+        return ResponseEntity.ok(expenseService.createExpense(expense, userId));
     }
 
     //Get all expenses of logged user
     @GetMapping
-    public ResponseEntity<List<Expense>> getUserExpenses(String userId) {
-
+    public ResponseEntity<List<Expense>> getUserExpenses(@RequestHeader("X-User-Id") String userId) {
         return ResponseEntity.ok(
                 expenseService.getUserExpenses(userId)
         );
@@ -51,9 +49,9 @@ public class ExpenseController {
 
     //Delete expense
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExpense(@PathVariable Long id) {
+    public ResponseEntity<String> deleteExpense(@PathVariable Long id) {
         expenseService.deleteExpense(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Expense has been deleted Successfully");
     }
 }
 

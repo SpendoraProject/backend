@@ -16,7 +16,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     private ExpenseRepository expenseRepository;
 
     @Override
-    public Expense createExpense(Expense expense) {
+    public Expense createExpense(Expense expense, String userId) {
+        expense.setUserId(userId);
         expense.setCreatedAt(LocalDateTime.now());
         return expenseRepository.save(expense);
     }
