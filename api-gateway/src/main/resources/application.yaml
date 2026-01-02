@@ -4,21 +4,30 @@ server:
 spring:
   application:
     name: api-gateway
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
-      routes:
-        # Expense Service
-        - id: expense-service
-          uri: http://localhost:8082
-          predicates:
-            - Path=/api/expenses/**
-            - Path=/api/categories/**
+      server:
+        webflux:
+          routes:
+                    # Expense Service
+                    - id: expense-service
+                      uri: http://localhost:8082
+                      predicates:
+                        - Path=/api/expenses/**
 
-        # Auth Service
-        - id: auth-service
-          uri: http://localhost:8083
-          predicates:
-            - Path=/api/auth/**
+                    # Auth Service
+                    - id: auth-service
+                      uri: http://localhost:8083
+                      predicates:
+                        - Path=/api/auth/**
 
-      default-filters:
-        - StripPrefix=1  # Removes first segment like /api
+                    # Analytics Service
+                    - id: analytics-service
+                      uri: http://localhost:8084
+                      predicates:
+                        - Path=/api/analytics/**
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
