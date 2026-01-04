@@ -12,6 +12,11 @@ spring:
         webflux:
           routes:
                     # Expense Service
+                    - id: notification-service
+                      uri: http://localhost:8085
+                      predicates:
+                        - Path=/api/notification/**
+                    # Expense Service
                     - id: expense-service
                       uri: http://localhost:8082
                       predicates:
