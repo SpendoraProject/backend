@@ -6,6 +6,7 @@ import com.spendora.notification_service.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,6 +39,6 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setStatus("SENT");
         notification.setCreatedAt(LocalDateTime.now());
 
-        repository.save(notification);
+        notificationRepository.save(notification);
     }
 }
