@@ -16,6 +16,7 @@ spring:
                       uri: http://localhost:8085
                       predicates:
                         - Path=/api/notification/**
+                        - Path=/api/budget/**
                     # Expense Service
                     - id: expense-service
                       uri: http://localhost:8082

@@ -20,50 +20,50 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     private ExpenseRepository expenseRepository;
 
     @Override
-    public List<ExpenseSummaryDTO> getMonthlySummary() {
-        List<ExpenseEntity> expenses = expenseRepository.findAll();
+    public List<ExpenseSummaryDTO> getMonthlySummary(String userId) {
 
-        Map<Integer, List<ExpenseEntity>> monthMap = expenses.stream()
-                .collect(Collectors.groupingBy(exp -> exp.getExpenseDate().getMonthValue()));
+        List<ExpenseEntity> expenses =
+                expenseRepository.findByUserId(userId);
+
+        Map<Integer, List<ExpenseEntity>> monthMap =
+                expenses.stream()
+                        .collect(Collectors.groupingBy(
+                                exp -> exp.getExpenseDate().getMonthValue()
+                        ));
 
         List<ExpenseSummaryDTO> summaryList = new ArrayList<>();
 
         for (Map.Entry<Integer, List<ExpenseEntity>> entry : monthMap.entrySet()) {
+
             int monthNum = entry.getKey();
             List<ExpenseEntity> monthExpenses = entry.getValue();
 
-            double total = monthExpenses.stream()
-                    .map(ExpenseEntity::getAmount)         // Stream<BigDecimal>
-                    .mapToDouble(BigDecimal::doubleValue)  // convert to double
-                    .sum();
-
-            double avg = monthExpenses.stream()
-                    .map(ExpenseEntity::getAmount)
-                    .mapToDouble(BigDecimal::doubleValue)
-                    .average()
-                    .orElse(0);
-
-            double max = monthExpenses.stream()
-                    .map(ExpenseEntity::getAmount)
-                    .mapToDouble(BigDecimal::doubleValue)
-                    .max()
-                    .orElse(0);
-
-            double min = monthExpenses.stream()
-                    .map(ExpenseEntity::getAmount)
-                    .mapToDouble(BigDecimal::doubleValue)
-                    .min()
-                    .orElse(0);
+            DoubleSummaryStatistics stats =
+                    monthExpenses.stream()
+                            .map(ExpenseEntity::getAmount)
+                            .mapToDouble(BigDecimal::doubleValue)
+                            .summaryStatistics();
 
             Month monthEnum = Month.of(monthNum);
-            String monthName = monthEnum.getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+            String monthName =
+                    monthEnum.getDisplayName(TextStyle.FULL, Locale.ENGLISH);
 
-            summaryList.add(new ExpenseSummaryDTO(monthName, total, avg, max, min));
+            summaryList.add(new ExpenseSummaryDTO(
+                    monthName,
+                    stats.getSum(),
+                    stats.getAverage(),
+                    stats.getMax(),
+                    stats.getMin()
+            ));
         }
 
-        // Optional: Sort by month
-        summaryList.sort(Comparator.comparing(dto -> Month.valueOf(dto.getMonth().toUpperCase()).getValue()));
+        summaryList.sort(
+                Comparator.comparing(
+                        dto -> Month.valueOf(dto.getMonth().toUpperCase()).getValue()
+                )
+        );
 
         return summaryList;
     }
+
 }

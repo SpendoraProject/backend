@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ExpenseSummaryDTO {
+    private String userId;
     private String month;
     private double totalExpense;
     private double averageExpense;
